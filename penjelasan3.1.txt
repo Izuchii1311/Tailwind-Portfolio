@@ -1,0 +1,114 @@
+Di dalam config TailwindCss terdapat @type import itu fitur baru di dalam 3.1
+
+    /** @type {import('tailwindcss').Config} */
+    module.exports = {
+        ...
+    }
+
+    *fitur itu adalah fitur bantuan ketika kita ingin memberikan custom warna sendiri atau yang lainnya.
+        misalkan baru menulis C sudah tampil seperti: color, columns, ...
+
+
+Fitur ke - 2
+
+    ...
+    @tailwind utilities;
+
+    .kotak {
+        @apply w-[100px] h-[100px] m-10 bg-hijau;
+        background-color: theme(colors.hijau / 50%);
+    }
+
+    *Jika kita mempunyai sebuah class .kotak dan ingin memberikan opacity pada warna-nya saja maka tidak bisa dengan memberikan class opacity.
+    Karena content di dalamnya juga akan mengalami opacity, oleh karena itu kita bisa menggunakan
+        background-color: rgba(186,218,85,1.00);
+
+        namun disini rgba kita tuliskan secara manual
+        kita dapat menggunakan theme dari color dan warna yang kita pilih lalu untuk opacity nya kita bisa memberikan / (garis miring) kemudian seberapa persen opacity yang ingin diberikan.
+
+
+Fitur ke - 3
+
+    Melakukan custom opacity pada warna
+
+        Misalkan kita membuat custom warna di config-nya.
+            ...
+                colors: {
+                    hijau: '#bada55',
+                    tema: 'rgb(var(--warna-tema), <alpha-value>)',
+                }
+            ...
+
+            *nah disini kita membuat tema dimana tema akan menerima variabel css, dan akan menerima juga kadar opacity dari warna nya.
+            Lalu --warna tema akan diambil dari file input.css
+
+            :root {
+                --warna-ungu: 168, 85, 247;
+                --warna-pink: 236, 72, 153;
+                --warna-biru: 2, 132, 199;
+                --warna-orange: 249, 155, 22;
+
+                --warna-tema: var(--warna-pink);
+            }
+
+            @tailwind base;
+            ...
+
+    Maka saat melakukan pemanggilan warna misalkan bg-sky-700 bisa kita ganti dengan warna kita menjadi bg-biru/70
+
+
+Fitur ke - 4
+    Utility Baru - Border Spacing
+
+        <table class="w-full text-sm border-separate border-spacing-1 ">
+
+        Fitur baru yaitu Border-separate = untuk memisahkan tiap tiap bordernya
+        kita juga bisa memberikan border-spacing-..
+        *jika tidak diberikan border-separate maka border-spacingnya tidak akan jalan
+
+
+Fitur ke - 5 Arbitrary Variant
+
+    Arbitrary value = kita bisa memberikan nilai yang tidak ada di tailwind css-nya.
+        misalkan w-[100px];
+
+    Arbitrary variant
+        misalkan kita mempunyai
+            ul
+                li - Item 1
+                li - Item 2
+                li - Item 3
+                li - Item 4
+                    div
+                        span
+                        span
+                        span
+                li - Item 5
+            ul
+
+            di dalam li kita berikan bg-sky-100.
+            bagaimana jika kita ingin merubah warna nya tanpa menghapus sky-100.
+
+            Jika di css kita bisa timpa dengan menuliskan
+                ul li {
+                    background-color: pink;
+                }
+
+            Namun dengan adanya Arbitrary Variant, kita bisa cukup melakukannya di dalam ul nya dengan cara
+
+                [&>*]:bg-pink-200
+
+                [&>*] = variant, dan semua (*) element yang ada di dalam ul diubah dan berikan warna bg-pink-200
+
+            Kita juga bisa melakukan seperti ini
+            First Child Li
+                [&>li:first-child]:bg-purple-200
+
+            Li ke 3
+                [&>li:nth-child(3)]:bg-orange-200
+
+
+            Kira juga bisa melakukan untuk yang lebih kompleks, child di dalam child.
+            Seperti ini..
+                [&>li:nth-child(4)>div>span:nth-child(2)]:bg-emerald-200
+                [&>li:nth-child(4)>div>span:nth-child(2):hover]:bg-red-800

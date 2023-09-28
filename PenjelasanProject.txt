@@ -1,0 +1,15 @@
+== Starter Installation
+npm init -y                 = package node js.
+npm install -D tailwindcss  = install tailwindcss.
+npx tailwindcss init        = inisialisasi tailwindcss.
+content: ['index.html'],    = file yang akan bisa menggunakan tailwindcss.
+@tailwind base;             = membuat file src/input.css
+@tailwind components;
+@tailwind utilities;
+npx tailwindcss -i ./src/input.css -o ./dist/css/style.css --watch       = generate menjadi css
+
+extend itu menambahkan dari fitur yang sudah dimiliki oleh tailwind
+
+icons yang digunakan https://simpleicons.org/
+
+class="fill-current", agar merubah svg menjadi text

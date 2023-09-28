@@ -1,0 +1,315 @@
+1. Apa itu TailwindCSS?
+    Sebuah utility-first framework yang di dalamnya banyak sekali terdapat class class.
+    Sebuah framework yang bisa membuat kita secara cepat membangun website yang modern, semuanya bisa kita buat tanpa meninggalkan HTML kita.
+
+    Membuat code html dengan css itu disebut Component-First.
+    Utility-First ?
+        di dalam htmlnya akan memiliki class class, yang akan didefinisikan di dalam css. Dan cssnya dibuatkan oleh Tailwind. Yaitu class yang berfungsi untuk melakukan 1 hal saja.
+
+    Vanilla Css (Component-First framework) vs. Bootstrap (UI framework) vs. Tailwind (Utility-First framework)
+
+    Utilities
+        > Preflight
+        > Layout
+        > Flexbox & Grid
+        > Spacing & Sizing
+        > Typography
+        > Background & Borders
+        > Effect & Filters
+        > Transition, Transformation & Animation
+        > Tables
+        > ...
+
+    Features
+        > Interactivity
+            - Pseudo-classes : hover, focus, active, first, last, ...
+            - Pseudo-element : before, after, placeholder, file, selection, ...
+        > Responsive Design
+        > Dark Mode
+        > Reusability
+        > Custom Styles
+        > Functions & Directives
+
+
+2. Kenapa TailwindCSS?
+    Apa yang biasa dilakukan orang orang dalam prakteknya tidak berhasil.
+    CSS Utility Classes and "Separation of Concerns". / (Pemisahan Tujuan)
+
+    Separation of Concerns. [Structure, Presentation(Tampilan), Behaviour(Prilaku)].
+    Intinya dengan Separation of Concern Cssnya tidak terikat dengan element HTML.
+
+    Semantic CSS = memberikan makna pada html.
+        misalkan :
+            cara ini tidak semantic dan tidak menerapkan Separation of Concern
+                <p class="text-center">Hello there!</p>
+                .text-center { text-align: center; }
+
+            seharusnya kita berikan makna pada codenya
+                <p class="greeting">Hello there!</p>
+                .greeting { text-align: center; }
+
+    BEM (Block, Element, Modifiers) dengan BEM maka diberikan __
+
+    misalkan :  p { ... }                   <- ini terikat dengan element html
+                .author-bio__text { ... }   <- init tidak terikat dengan element html
+                *namun ini tidak semantic, karena jika ada card baru dengan nama article maka kita harus buat baru
+
+    Solusinya dengan membuat komponen yang namanya tidak bergantung pada contentnya.
+    karena ada author dan article maka harus membuat 2x dan itu duplikasi, maka bisa diganti misalnya card.
+    *Namun Problem kembali di Separation of Concern
+
+    Separation of Concern.  (Css yang bergantung pada html)
+        Kelebihan : HTML restyleable, bisa ubah ubah htmlnya.
+        Kekurangan : CSS not reusable, tidak bisa digunakan kembali harus membuat baru.
+    vs.
+    Mixing of Concern.  (Html yang bergantung pada Css)
+        Kelebihan : CSS reusable, membuat komponen komponen yang bisa dipake di html.   (contoh: Bootstrap)
+        Kekurangan : HTML not reusable, kita tidak bisa sembarangan memberikan class.
+
+    Reusability adalah jalan yang digunakan oleh TailwindCss.
+
+    Menghilangkan Nama Komponen karena sudah tidak menganut Separation of Concern. Jadi semua properti properti css-nya diambil sebagai utility. Tapi sebaiknya kita tetap membuat component tapi buatlah dengan utility terlebih dahulu.
+        Component : .card
+        Utility : .text-center { text-align: center; }
+
+    Komponen CSS yang tidak bergantung pada konten.
+    misalkan : card, btn, img-list, modal, dll.
+
+        > child combinator CSS.
+            contoh : .container > img { ... }
+                    *turunannya langsung.
+
+
+3. Instalasi & Konfigurasi Tailwind Css.
+    Exs Vs Code : Tailwind CSS Intellisense, Live Preview, PostCss Language Support.
+    Package Manager : Node Js
+
+    *CDN tailwind bukan cara terbaik untuk production.
+    cdn tailwind : <script src="https://cdn.tailwindcss.com"></script>
+
+    Install Tailwind
+        npm init -y                                             -- inisialisasi package.json, -y akan membuat semuanya diisi dengan nilai default.
+
+        npm install -D tailwindcss postcss autoprefixer         -- install tailwind postcss & autoprefixer dengan node js
+        npx tailwindcss init                                    -- inisialisasi tailwind
+
+        npm uninstall tailwindcss                               *-- uninstall tailwind
+
+    Configurasi Path file template di tailwind.config.js
+        content: ['./index.html'],                              -- configurasi di file tailwind.config.css
+
+    Menambahkan Tailwind Directives pada file css               -- buat file input.css dan tambahkan code postcss berikut. Ini merupakan 3 layers of tailwind.
+        @tailwind base;                                             -- menjalankan Preflight (Reset semua browser)
+        @tailwind components;                                       -- meminta component di dalam librarynya
+        @tailwind utilities;                                        -- class utility yang akan dipakai
+
+    Build TailwindCss
+        npx tailwindcss -i ./input.css -o ./output.css --watch  -- build tailwind, hasil compile dari file input.css
+
+
+    Agar Rapih penyimpanan nya.
+    > node_modules
+    > public
+        - index.html
+    > src
+        > css
+            - input.css
+
+        ubah confignya menjadi content: ['./public/**/*.{html,js}'],
+        npx tailwindcss -i ./src/css/input.css -o ./public/css/style.css --watch
+
+    *jika ada class dari css yang tidak digunakan saat deploy akan secara otomatis menghilang.
+    *atau jika mau langsung dihilangkan dengan cara melakukan restart pada watchernya. Lalu jalankan kembali perintah ini :
+        npx tailwindcss -i ./src/css/input.css -o ./public/css/style.css --watch
+
+        atau cara cepatnya buka file tailwind.config.js lalu save maka code css yang tidak digunakannya akan menghilang.
+
+    *jika kita close project maka kita harus menjalankan perintah ini kembali:
+        npx tailwindcss -i ./src/css/input.css -o ./public/css/style.css --watch
+
+        namun ada cara cepatnya buka package.json
+        buat menjadi seperti ini
+            "scripts": {
+                "dev": "npx tailwindcss -i ./src/css/input.css -o ./public/css/style.css --watch",
+                "test": "echo \"Error: no test specified\" && exit 1"
+            },
+
+        tinggal jalankan npm run dev
+
+    *minify file style.css agar ukurannya lebih kecil (biasanya dilakukan diakhir ketika project selesai).
+        npx tailwindcss -o ./public/css/final.css --minify
+
+
+4. Utility Dasar (1)
+    Preflight           = reset milik tailwind.
+
+    *jika ingin menggunakan cdn bisa juga Menambahkan fitur autocompletenya tailwind.
+        agar bisa, cukup buat file tailwind.config.js kosong.
+
+    *menambahkan style css kita sendiri (inner html).
+        <style type="text/tailwindcss">
+            * {
+                border: 1px solid red;
+            }
+        </style>
+
+    Spacing & Sizing.
+        Margin memiliki nilai minus & auto, sedangkan padding tidak ada.
+        Space Between : memberikan jarak antar element.
+
+    Sizing.
+    Typography.
+    Colors.
+
+
+5. Utility Dasar (2)
+    Background & Border.
+        background attachment : bg-fixed (menimbulkan efek parallax)
+    Rounding & Shadow.
+    Effect & Filters.
+        mix blend mode : efek menggabungkan antara warna element dengan backgroundnya.
+        background blend  mode : efek menggabungkan antara background-image nge bland ke background-color.
+
+    jika kita memberikan style kita sendiri biasanya di extends tailwindnya.
+    namun kita juga bisa memberikan arbitrary value css di dalam tailwind.
+    misalkan : p-11 itu sama dengan 44px.
+                    misalkan kita ingin menyentuh 42 px bisa dengan cara p-[42px].
+
+    agar berada di tengah secara horizontal pembungkusnya harus diberikan flex.
+    memberikan transparansi : bg-white/30   -- memberikan transparansi 30%
+
+
+6. Pseudo Class & Dark Mode.
+    grouping.
+        misalkan sebuah box ketika di hover akan berubah warna.
+            maka cukup berikan : hover:bg-sky-200.
+        namun jika ingin merubah warna tulisan di dalamnya, tidak bisa secara langsung. kita harus menambahkan grouping pada text yang dipilih.
+            misalkan h5 nya akan berwarna putih : group-hover:text-white
+            *namun pada box nya kita harus memberikan class group, sebagai penanda bahwa ini adalah groupingnya.
+
+        merubah seleksi, dengan sudo class selection.
+
+        sibling, sebelah sebelahan elementnya.
+        misalkan input & p (notice).
+        di dalam inputnya diberikan peer, dan ketika inputannya salah misalkan.
+        maka di dalam p yang asanya diberikan class invisible tambahkan-juga peer-invalid:visible
+
+    dark-mode
+        dengan memberikan class dark:
+        dark mode bisa menyesuaikan dengan mode yang ada di dalam sistem operasi kita.
+        bisa juga diganti dengan lewat webnya.
+
+        dengan menambahkan darkMode: 'class',
+
+            tailwind.config = {
+                darkMode: 'class',
+                theme: {
+                    extend: {
+                        colors: {
+                        }
+                    }
+                }
+            }
+
+
+7. Transform, Transition, Animation
+    *Jika ingin memberikan custom animation buat juga, keyframe di dalam config tailwind-nya.
+
+8. Layouting
+    Container, utility class pada tailwind untuk memberikan ukuran yang fix pada sebuah bagian atau element.
+    Floats, sering digunakan biasanya digunakan juga dalam wrapping.
+    Positions, menerapkan posisi pada element yang dimiliki.
+        *cara memberikan nilai minus :
+            top-10      -- tidak minus
+            -top-10     -- minus
+
+        *cara agar posisi tepat berada di tengah, jika menggunakan position.
+            left-1/2 -translate-x-1/2
+            *bisa menggunakan cara tersebut dan itu menyesuaikan
+    Columns
+
+9. Responsive Design
+    Memberikan utility utility berbeda saat ukuran layar tertentu / breakpoint tertentu.
+    jika diberikan prefix (min-height) maka akan berubah seterusnya
+
+        Breakpoint prefix	Minimum width	CSS
+        sm	640px	@media (min-width: 640px) { ... }
+        md	768px	@media (min-width: 768px) { ... }
+        lg	1024px	@media (min-width: 1024px) { ... }
+        xl	1280px	@media (min-width: 1280px) { ... }
+        2xl	1536px	@media (min-width: 1536px) { ... }
+
+    Menyesuaikan image bisa dengan cara berikut.
+        sm:h-64 sm:w-full sm:object-cover
+
+
+10. Flexbox
+    Jika tidak menggunakan flexbox itu content akan menjajar ke bawah kan, nah kasus kali ini ketika menggunakan flex, maka sejajarnya akan kesamping sebanyak banyaknya content apapun itu itu akan memaksakan sejajar kesamping.
+    berikan flex-wrap agar contentnya dapat menyesuaikan dari ukuran nya, maka ketika tidak cukup akan turun ke bawah bukan memaksakan untuk tetap disampingnya.
+
+11. Grid
+
+12. Functions & Directives
+    https://tailwindcss.com/docs/functions-and-directives
+
+    Directives itu adalah keyword yang bisa kita gunakan di dalam tailwind yang didepannya memiliki @ 'at-rules' yang bisa kita gunakan di dalam css yang menawarkan fungsi fungsi spesial di project tailwind kita.
+
+        @tailwind   = ketika kita ingin melakukan genarate terhadap css tailwind-nya.
+
+        @tailwind base      = style style utama yang menjadi dasar tailwindnya.
+        @tailwind component = akan menambahkan class class component jika ada.
+        @tailwind utilities = akan memasukkan class class utilities yang digunakan
+        @tailwind variants  = seperti hover: focus:
+
+        @layer      = kita gunakan ketika kita ingin memodifikasi isi dari 3 directives diatas.
+
+
+        kita bisa melakukannya seperti ini
+            @tailwind base;
+            @tailwind components;
+            @tailwind utilities;
+
+            h1 {
+                font-size: 6rem;
+            }
+
+            *namun jika tidak menggunakan @layer tailwind akan menyimpan h1 {} dipaling bawah
+
+        Jika kita melakukannya seperti ini
+        @tailwind base;
+        @tailwind components;
+        @tailwind utilities;
+
+        @layer base {
+            h1 {
+                font-size: 6rem;
+            }
+        }
+
+            *maka akan di atas, menjadi perubahan di dalam base nya.
+
+            begitu pula untuk custom utilities.
+
+
+        @apply  = digunakan untuk melakukan penyimpanan utilities utilities class yang sudah ada di tailwind untuk dimasukkan ke custom css kita secara inline.
+            *bisa juga digunakan untuk membuat component.
+
+
+        @layer components {
+            .grid-card {
+                @apply bg-blue-500 aspect-[4/3] rounded-lg m-2 md:aspect-[3/4] xl:aspect-[4/3] overflow-hidden relative hover:scale-95 transition-all duration-500;
+            }
+        }
+
+            *dengan membuat components kita cukup memanggil .grid-card
+
+
+    Functions, menambahkan beberapa fungsi custom di dalam css untuk mengakses nilai nilai spesifik untuk tailwindnya.
+        Contoh Theme: {}
+
+    jika kita melakukan-nya seperti ini maka
+    h1 {
+        @apply text-8xl text-izu;   /* hasil warna nya akan rgb */
+        /* Functions */
+        /* color: theme(colors.izu); */     /* hasil warna nya akan hexa */
+    }
