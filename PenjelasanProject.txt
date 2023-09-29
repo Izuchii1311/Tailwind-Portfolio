@@ -49,4 +49,4 @@ Local Storage - dark mode
 
 
 Minify Css.
-    npx tailwindcss -o ./dist/css/final.css --minify
+    npx tailwindcss -i ./src/input.css -o ./dist/css/final.css --minify
