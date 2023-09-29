@@ -13,3 +13,40 @@ extend itu menambahkan dari fitur yang sudah dimiliki oleh tailwind
 icons yang digunakan https://simpleicons.org/
 
 class="fill-current", agar merubah svg menjadi text
+
+
+Install Plugin, pretier plugin css.
+    supaya class classnya bisa diurutkan berdasarkan urutan khusus dari tailwind.
+
+    npm install -D prettier prettier-plugin-tailwindcss
+
+Local Storage - dark mode
+
+    // Dark Mode Toggle
+        const darkToggle = document.querySelector('#dark-toggle');
+        const html = document.querySelector('html');
+
+        darkToggle.addEventListener('click', function() {
+            if (darkToggle.checked) {
+                html.classList.add('dark');
+                // Local Storage Theme
+                localStorage.theme = 'dark';
+            } else {
+                html.classList.remove('dark');
+                localStorage.theme = 'light';
+            }
+        });
+
+    Inspect >> Application >> Local Storage
+
+    copy ini di web tailwind-nya copy di head di script
+    // On page load or when changing themes, best to add inline in `head` to avoid FOUC
+        if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+        document.documentElement.classList.add('dark')
+        } else {
+        document.documentElement.classList.remove('dark')
+        }
+
+
+Minify Css.
+    npx tailwindcss -o ./dist/css/final.css --minify
